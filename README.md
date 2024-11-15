@@ -1,5 +1,5 @@
 # AirBnB Clone
-This project contains executables which together wuth an interactive console, imitates the functionality of an AirBnB website
+This project contains executables which together with an interactive console, imitates the functionality of an AirBnB website
 
 ## Table of Contents
 - [Installation](#installation)
