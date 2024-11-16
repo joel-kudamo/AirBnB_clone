@@ -1,5 +1,5 @@
-# Project Title
-This project contains files that imitate the functionality of an AirBnB website clone
+# AirBnB Clone
+This project contains executables which together with an interactive console, imitates the functionality of an AirBnB website
 
 ## Table of Contents
 - [Installation](#installation)

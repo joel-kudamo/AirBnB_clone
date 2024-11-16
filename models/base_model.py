@@ -2,16 +2,24 @@
 """This module contains the BaseModel class"""
 from datetime import datetime
 import uuid
+from models import storage
 
 
 class BaseModel:
-    """This is the base class"""
-
-    def __init__(self):
+    """This is the base class for managing
+    user data and timestamps for creating and
+    updating an instance"""
+    def __init__(self, *args, **kwargs):
         """Initialize a new BaseModel with unique id and timestamps."""
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
+        if kwargs != {}:
+            self.id = kwargs['id']
+            self.created_at = datetime.fromisoformat(kwargs['created_at'])
+            self.updated_at = datetime.fromisoformat(kwargs['updated_at'])
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = self.created_at
+            storage.new(self)
 
     def __setattr__(self, name, value):
         """Automatically updates 'updated_at' when attributes change."""
@@ -22,6 +30,7 @@ class BaseModel:
     def save(self):
         """Updates the updated_at timestamp"""
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """Convert instance to dictionary with ISO format timestamps."""
