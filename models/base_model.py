@@ -20,6 +20,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = self.created_at
+            storage.new(self)
         
 
     def __setattr__(self, name, value):
@@ -31,6 +32,7 @@ class BaseModel:
     def save(self):
         """Updates the updated_at timestamp"""
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """Convert instance to dictionary with ISO format timestamps."""
@@ -48,4 +50,3 @@ class BaseModel:
         """Return string representation of the instance."""
         return f'[{self.__class__.__name__}] ({self.id}) {self.__dict__}'
 
-a = BaseModel()
