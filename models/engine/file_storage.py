@@ -4,7 +4,7 @@ import json
 
 
 class FileStorage:
-    """This Filestorage class allows for serializing and 
+    """This Filestorage class allows for serializing and
     deserializing instances into a JSON file
     """
 
@@ -19,7 +19,8 @@ class FileStorage:
     def new(self, obj):
         """saves the object to the dictionary with a unique key"""
         if isinstance(obj, object) and isinstance(obj.id, str):
-            self.__objects[f"{obj.__class__.__name__}.{obj.id}"] = obj.to_dict()
+            self.__objects[f"{obj.__class__.__name__}.{obj.id}"]\
+            = obj.to_dict()
 
     def save(self):
         """serializes __objects to json string and writes to __file_path"""
@@ -34,7 +35,3 @@ class FileStorage:
                 self.__objects = json.load(f)
         except (OSError, FileNotFoundError):
             pass
-
-
-
-
