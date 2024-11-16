@@ -25,7 +25,7 @@ class FileStorage:
         """serializes __objects to json string and writes to __file_path"""
         if len(self.__file_path) != 0:
             with open(f"{self.__file_path}", "w", encoding="utf-8") as f:
-                json.dump(self.__objects, f)
+                json.dump(self.__objects, f, indent=2)
 
     def reload(self):
         """deserializes the JSON file to __objects if JSON file exists"""
