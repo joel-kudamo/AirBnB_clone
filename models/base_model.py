@@ -16,9 +16,11 @@ class BaseModel:
                 if key == "id":
                     self.id = kwargs['id']
                 elif key == "created_at":
-                    self.created_at = datetime.fromisoformat(kwargs['created_at'])
+                    self.created_at =\
+                            datetime.fromisoformat(kwargs['created_at'])
                 elif key == "updated_at":
-                    self.updated_at = datetime.fromisoformat(kwargs['updated_at'])
+                    self.updated_at =\
+                            datetime.fromisoformat(kwargs['updated_at'])
                 elif key == "__class__":
                     pass
                 else:
@@ -55,5 +57,3 @@ class BaseModel:
     def __str__(self):
         """Return string representation of the instance."""
         return f'[{self.__class__.__name__}] ({self.id}) {self.__dict__}'
-
-

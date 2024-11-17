@@ -51,7 +51,6 @@ instance based on the class name and id
         except KeyError as e:
             print(e)
 
-
     def check_cmdarg(self, args):
         """custom function to check if class, class.id exists or
 is missing"""
@@ -61,14 +60,15 @@ is missing"""
                 if (len(cmdargs)) > 1:
                     try:
                         with open("file.json", "r", encoding="utf-8") as f:
-                            HBNBCommand.__instances  = json.load(f)
+                            HBNBCommand.__instances = json.load(f)
                             checkKey = f"BaseModel.{cmdargs[1]}"
-                            if HBNBCommand.__instances.get(checkKey) != None:
+                            if HBNBCommand.__instances.get(checkKey)\
+                                    is not None:
                                 return HBNBCommand.__instances.get(checkKey)
                             else:
-                                raise KeyError("** no instance found **") 
+                                raise KeyError("** no instance found **")
                     except (OSError, FileNotFoundError):
-                        raise KeyError("** no instance found **")   
+                        raise KeyError("** no instance found **")
                 else:
                     print("** instance id missing **")
             else:
@@ -89,7 +89,7 @@ id (save the change into the JSON file).
             HBNBCommand.__instances = {}
         except KeyError as e:
             print(e)
-        
+
     def do_update(self, args):
         """ Updates an instance based on the class name and id
 by adding or updating attribute (save the change into the JSON file)
@@ -127,9 +127,9 @@ to the class private attribute
         """
         try:
             with open("file.json", "r", encoding="utf-8") as f:
-                HBNBCommand.__instances  = json.load(f)
+                HBNBCommand.__instances = json.load(f)
             for keys in HBNBCommand.__instances.keys():
-                    print(HBNBCommand.__instances[keys])
+                print(HBNBCommand.__instances[keys])
         except (OSError, FileNotFoundError):
             pass
 
