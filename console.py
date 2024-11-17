@@ -24,7 +24,7 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Prevents termination of program by blankline
         + ENTER"""
-        return
+        pass
 
     def do_create(self, args):
         """Creates a new instance of BaseModel, saves it
@@ -44,13 +44,13 @@ class HBNBCommand(cmd.Cmd):
         """Prints the string representation of an
 instance based on the class name and id
         """
-        cmdargs = self.check_cmdarg(args)
-        if cmdargs is not None:
-            checkKey = f"BaseModel.{cmdargs[1]}"
-            print(HBNBCommand.__instances.get(checkKey, "** no instance found **"))
+        try:
+            if self.check_cmdarg(args):
+                print(self.check_cmdarg(args))
             HBNBCommand.__instances = {}
-        else:
-            return
+        except KeyError as e:
+            print(e)
+
 
     def check_cmdarg(self, args):
         """custom function to check if class, class.id exists or
@@ -61,10 +61,14 @@ is missing"""
                 if (len(cmdargs)) > 1:
                     try:
                         with open("file.json", "r", encoding="utf-8") as f:
-                          HBNBCommand.__instances  = json.load(f)
-                          return cmdargs
+                            HBNBCommand.__instances  = json.load(f)
+                            checkKey = f"BaseModel.{cmdargs[1]}"
+                            if HBNBCommand.__instances.get(checkKey) != None:
+                                return HBNBCommand.__instances.get(checkKey)
+                            else:
+                                raise KeyError("** no instance found **") 
                     except (OSError, FileNotFoundError):
-                        print("** no instance found **")    
+                        raise KeyError("** no instance found **")   
                 else:
                     print("** instance id missing **")
             else:
@@ -76,36 +80,58 @@ is missing"""
         """ Deletes an instance based on the class name and
 id (save the change into the JSON file).
         """
-        cmdargs = self.check_cmdarg(args)
-        if cmdargs is not None:
-            del HBNBCommand.__instances[f"BaseModel.{cmdargs[1]}"]
-            with open("file.json", "w", encoding="utf-8") as f:
-                json.dump(HBNBCommand.__instances, f, indent=2)
+        try:
+            if self.check_cmdarg(args):
+                cmdargs = args.split()
+                del HBNBCommand.__instances[f"BaseModel.{cmdargs[1]}"]
+                with open("file.json", "w", encoding="utf-8") as f:
+                    json.dump(HBNBCommand.__instances, f, indent=2)
             HBNBCommand.__instances = {}
-        else:
-            return
+        except KeyError as e:
+            print(e)
         
     def do_update(self, args):
         """ Updates an instance based on the class name and id
 by adding or updating attribute (save the change into the JSON file)
         """
-        pass
+        try:
+            if self.check_cmdarg(args):
+                cmdargs = args.split()
+                key = f"{cmdargs[0]}.{cmdargs[1]}"
+                if len(cmdargs) > 2:
+                    if len(cmdargs) == 4:
+                        HBNBCommand.__instances[key][cmdargs[2]] = cmdargs[3]
+                        with open("file.json", "w", encoding="utf-8") as f:
+                            json.dump(HBNBCommand.__instances, f, indent=2)
+                        HBNBCommand.__instances = {}
+                    else:
+                        print("** value missing **")
+                else:
+                    print("** attribute name missing **")
+        except KeyError as e:
+            print(e)
 
     def do_all(self, args):
         """ Prints all string representation of
 all instances based or not on the class name"""
         cmdargs = args.split()
         if len(cmdargs) == 0 or cmdargs[0] == "BaseModel":
-            try:
-                with open("file.json", "r", encoding="utf-8") as f:
-                    HBNBCommand.__instances  = json.load(f)
-                for keys in HBNBCommand.__instances.keys():
-                        print(HBNBCommand.__instances[keys])
-            except (OSError, FileNotFoundError):
-                pass
+            self.openfile()
         else:
             print("** class doesn't exist **")
         HBNBCommand.__instances = {}
+
+    def openfile(self):
+        """Opens file.json and saves the stringified dictionary
+to the class private attribute
+        """
+        try:
+            with open("file.json", "r", encoding="utf-8") as f:
+                HBNBCommand.__instances  = json.load(f)
+            for keys in HBNBCommand.__instances.keys():
+                    print(HBNBCommand.__instances[keys])
+        except (OSError, FileNotFoundError):
+            pass
 
 
 if __name__ == '__main__':
