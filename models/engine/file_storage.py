@@ -20,7 +20,7 @@ class FileStorage:
         """saves the object to the dictionary with a unique key"""
         if isinstance(obj, object) and isinstance(obj.id, str):
             self.__objects[f"{obj.__class__.__name__}.{obj.id}"]\
-            = obj.to_dict()
+                    = obj.to_dict()
 
     def save(self):
         """serializes __objects to json string and writes to __file_path"""
