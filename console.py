@@ -2,6 +2,12 @@
 """(module) This module contains the HBNBCommand object"""
 import cmd
 from models.base_model import BaseModel
+from models.user import User
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
 import json
 
 
@@ -10,6 +16,7 @@ class HBNBCommand(cmd.Cmd):
     to create a custom command interpreter for
     managing AirBnB clone database"""
     prompt = "(hbnb) "
+    __class_names = ["BaseModel", "User", "City", "Amenity", "Place", "Review"]
 
     def do_quit(self, args):
         """Quit command to exit the program
@@ -27,14 +34,14 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """Creates a new instance of BaseModel, saves it
-(to the JSON file) and prints the id
+        """Creates a new instance of any class in __class_names,
+saves it(to the JSON file) and prints the id
         """
         if len(args) == 0:
             print("** class name missing **")
         else:
-            if args == "BaseModel":
-                new_model = BaseModel()
+            if args in self.__class_names:
+                new_model = eval(args)()
                 new_model.save()
                 print(new_model.id)
             else:
@@ -56,12 +63,12 @@ instance based on the class name and id
 is missing"""
         cmdargs = args.split()
         if len(cmdargs) > 0:
-            if cmdargs[0] == "BaseModel":
+            if cmdargs[0] in self.__class_names:
                 if (len(cmdargs)) > 1:
                     try:
                         with open("file.json", "r", encoding="utf-8") as f:
                             HBNBCommand.__instances = json.load(f)
-                            checkKey = f"BaseModel.{cmdargs[1]}"
+                            checkKey = f"{cmdargs[0]}.{cmdargs[1]}"
                             if HBNBCommand.__instances.get(checkKey)\
                                     is not None:
                                 return HBNBCommand.__instances.get(checkKey)
@@ -83,7 +90,7 @@ id (save the change into the JSON file).
         try:
             if self.check_cmdarg(args):
                 cmdargs = args.split()
-                del HBNBCommand.__instances[f"BaseModel.{cmdargs[1]}"]
+                del HBNBCommand.__instances[f"{cmdargs[0]}.{cmdargs[1]}"]
                 with open("file.json", "w", encoding="utf-8") as f:
                     json.dump(HBNBCommand.__instances, f, indent=2)
             HBNBCommand.__instances = {}
@@ -115,7 +122,7 @@ by adding or updating attribute (save the change into the JSON file)
         """ Prints all string representation of
 all instances based or not on the class name"""
         cmdargs = args.split()
-        if len(cmdargs) == 0 or cmdargs[0] == "BaseModel":
+        if len(cmdargs) == 0 or cmdargs[0] in self.__class_names:
             self.openfile()
         else:
             print("** class doesn't exist **")
