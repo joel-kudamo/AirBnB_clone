@@ -7,3 +7,4 @@ from models.base_model import BaseModel
 class Amenity(BaseModel):
     """This object inherits from the BaseModel class"""
     name = ""
+    pass

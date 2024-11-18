@@ -8,3 +8,4 @@ class City(BaseModel):
     """This object inherits from the BaseModel class"""
     state_id = ""
     name = ""
+    pass
