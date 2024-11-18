@@ -1,8 +1,7 @@
 #!/usr/bin/python3
-"""This module contains the BaseModel class"""
+"""This module contains the BaseModel class """
 from datetime import datetime
 import uuid
-from models import storage
 
 
 class BaseModel:
@@ -12,24 +11,36 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """Initialize a new BaseModel with unique id and timestamps."""
         if kwargs != {}:
-            self.id = kwargs['id']
-            self.created_at = datetime.fromisoformat(kwargs['created_at'])
-            self.updated_at = datetime.fromisoformat(kwargs['updated_at'])
+            for key, value in kwargs.items():
+                if key == "id":
+                    self.id = kwargs['id']
+                elif key == "created_at":
+                    self.created_at =\
+                            datetime.fromisoformat(kwargs['created_at'])
+                elif key == "updated_at":
+                    self.updated_at =\
+                            datetime.fromisoformat(kwargs['updated_at'])
+                elif key == "__class__":
+                    pass
+                else:
+                    self.__setattr__(key, value)
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = self.created_at
+            from models import storage
             storage.new(self)
 
     def __setattr__(self, name, value):
         """Automatically updates 'updated_at' when attributes change."""
-        self.__dict__[name] = value
+        super().__setattr__(name, value)
         if name != 'updated_at':
             self.__dict__["updated_at"] = datetime.now()
 
     def save(self):
         """Updates the updated_at timestamp"""
         self.updated_at = datetime.now()
+        from models import storage
         storage.save()
 
     def to_dict(self):
